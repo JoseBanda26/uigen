@@ -41,11 +41,15 @@ jobs:
         with:
           node-version: 20
 
-      - name: Project Setup
+      - name: Install Dependencies
         run: |
           npm install
           npx prisma generate
           npx prisma migrate deploy
+
+      - name: Start Dev Server
+        continue-on-error: true
+        run: |
           npm run dev:daemon > logs.txt 2>&1 &
           echo "Waiting for server..."
           npx wait-on http://localhost:3000 --timeout 60000
@@ -58,11 +62,11 @@ jobs:
 
           # Custom Instructions
           custom_instructions: |
-            The project is already set up with all dependencies installed.
-            The server is already running at localhost:3000. Logs from it
-            are being written to logs.txt. If needed, you can query the
-            db with the 'sqlite3' cli. If needed, use the mcp__playwright
-            set of tools to launch a browser and interact with the app.
+            Dependencies are installed and the database is migrated.
+            The dev server may be running at localhost:3000 (logs in logs.txt).
+            If needed, you can query the db with the 'sqlite3' cli.
+            If the server is available, use the mcp__playwright tools to
+            launch a browser and interact with the app.
 
           # MCP Server Configuration
           mcp_config: |
