@@ -43,8 +43,10 @@ jobs:
 
       - name: Project Setup
         run: |
-          npm run setup
-          npm run dev:daemon &
+          npm install
+          npx prisma generate
+          npx prisma migrate deploy
+          npm run dev:daemon > logs.txt 2>&1 &
           echo "Waiting for server..."
           npx wait-on http://localhost:3000 --timeout 60000
 
